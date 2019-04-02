@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: rest-server-ds
+spec:
+  selector:
+    matchLabels:
+      app: rest-server
+  template:
+    metadata:
+      labels:
+        app: rest-server
+      name: rest-server
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: pai-master
+                operator: In
+                values:
+                - 'true'
+      containers:
+      - env:
+        - name: LAUNCHER_WEBSERVICE_URI
+          value: http://10.20.37.175:9086
+        - name: HDFS_URI
+          value: hdfs://10.20.37.175:9000
+        - name: WEBHDFS_URI
+          value: http://10.20.37.175:5070
+        - name: YARN_URI
+          value: http://10.20.37.175:8088
+        - name: JWT_SECRET
+          value: pai-secret
+        - name: DEFAULT_PAI_ADMIN_USERNAME
+          value: admin
+        - name: DEFAULT_PAI_ADMIN_PASSWORD
+          value: admin-password
+        - name: K8S_APISERVER_URI
+          value: http://10.20.37.175:8080
+        - name: GITHUB_OWNER
+          value: Microsoft
+        - name: GITHUB_REPOSITORY
+          value: pai
+        - name: GITHUB_PATH
+          value: marketplace
+        image: docker.io/openpai/rest-server:v0.9.1
+        imagePullPolicy: Always
+        name: rest-server
+        ports:
+        - containerPort: 8080
+          hostPort: 9186
+          name: rest-server
+        resources:
+          limits:
+            memory: 512Mi
+      hostNetwork: false
+      hostPID: false
+      imagePullSecrets:
+      - name: pai-secret
