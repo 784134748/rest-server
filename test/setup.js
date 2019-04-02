@@ -18,7 +18,7 @@
 
 // environment variables
 process.env.NODE_ENV = 'test';
-process.env.SERVER_PORT = 9186;
+process.env.SERVER_PORT = 8080;
 process.env.HDFS_URI = 'hdfs://10.20.37.175:9000';
 process.env.WEBHDFS_URI = 'http://10.20.37.175:5070';
 process.env.LAUNCHER_WEBSERVICE_URI = 'http://10.20.37.175:9086';
